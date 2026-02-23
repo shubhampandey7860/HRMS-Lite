@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { authAPI } from '../services/api';
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -9,16 +9,15 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_EMPLOYEE_API_URL || 'http://localhost:8000/api';
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const endpoint = isLogin ? `${API_URL}/auth/login/` : `${API_URL}/auth/signup/`;
-      const response = await axios.post(endpoint, formData);
+      const response = isLogin 
+        ? await authAPI.login(formData) 
+        : await authAPI.signup(formData);
       
       localStorage.setItem('token', response.data.access);
       localStorage.setItem('username', response.data.username || formData.username);

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const EMPLOYEE_API = import.meta.env.VITE_EMPLOYEE_API_URL || 'https://hrms-employee-service-88t0.onrender.com';
-const ATTENDANCE_API = import.meta.env.VITE_ATTENDANCE_API_URL || 'https://hrms-attendance-service.onrender.com';
+const EMPLOYEE_API = import.meta.env.VITE_EMPLOYEE_API_URL || 'https://hrms-employee-service-88t0.onrender.com/api';
+const ATTENDANCE_API = import.meta.env.VITE_ATTENDANCE_API_URL || 'https://hrms-attendance-service.onrender.com/api';
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('token');
@@ -30,6 +30,11 @@ export const employeeAPI = {
   getById: (id) => employeeClient.get(`/employees/${id}/`),
   create: (data) => employeeClient.post('/employees/', data),
   delete: (id) => employeeClient.delete(`/employees/${id}/`),
+};
+
+export const authAPI = {
+  signup: (data) => employeeClient.post('/auth/signup/', data),
+  login: (data) => employeeClient.post('/auth/login/', data),
 };
 
 export const attendanceAPI = {
