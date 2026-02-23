@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: hrms-employee-service
+    env: python
+    region: oregon
+    buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
+    startCommand: gunicorn employee_service.wsgi:application
+    rootDir: employee-service
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+
+  - type: web
+    name: hrms-attendance-service
+    env: python
+    region: oregon
+    buildCommand: pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
+    startCommand: gunicorn attendance_service.wsgi:application
+    rootDir: attendance-service
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: EMPLOYEE_SERVICE_URL
+        sync: false
+
+databases:
+  - name: hrms-employee-db
+    region: oregon
+    plan: free
+    
+  - name: hrms-attendance-db
+    region: oregon
+    plan: free

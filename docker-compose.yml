@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  employee-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: employee_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - employee_data:/var/lib/postgresql/data
+
+  attendance-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: attendance_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - attendance_data:/var/lib/postgresql/data
+
+  employee-service:
+    build: ./employee-service
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DB_HOST=employee-db
+      - DB_PORT=5432
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+    depends_on:
+      - employee-db
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  attendance-service:
+    build: ./attendance-service
+    ports:
+      - "8001:8001"
+    environment:
+      - DEBUG=True
+      - DB_HOST=attendance-db
+      - DB_PORT=5432
+      - EMPLOYEE_SERVICE_URL=http://employee-service:8000
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+    depends_on:
+      - attendance-db
+      - employee-service
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8001"
+
+volumes:
+  employee_data:
+  attendance_data:
