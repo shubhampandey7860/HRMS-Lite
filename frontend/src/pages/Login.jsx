@@ -23,7 +23,12 @@ export default function Login() {
       localStorage.setItem('username', response.data.username || formData.username);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Authentication failed');
+      console.error('Auth error:', err.response?.data || err.message);
+      const errorMsg = err.response?.data?.error 
+        || err.response?.data?.message 
+        || err.message 
+        || 'Authentication failed. Please try again.';
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
