@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const EMPLOYEE_API = import.meta.env.VITE_EMPLOYEE_API_URL || 'http://localhost:8000/api';
-const ATTENDANCE_API = import.meta.env.VITE_ATTENDANCE_API_URL || 'http://localhost:8001/api';
+const EMPLOYEE_API = import.meta.env.VITE_EMPLOYEE_API_URL || 'https://hrms-employee-service-88t0.onrender.com';
+const ATTENDANCE_API = import.meta.env.VITE_ATTENDANCE_API_URL || 'https://hrms-attendance-service.onrender.com';
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('token');
